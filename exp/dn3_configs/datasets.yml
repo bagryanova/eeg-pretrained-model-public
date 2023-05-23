@@ -1,0 +1,59 @@
+Configuratron:
+  use_only:
+    - mmidb
+    # - sleep-edf
+  preload: False
+  sfreq: 256
+  deep1010:
+    return_mask: False
+
+datasets:
+  mmidb:
+    name: "Physionet MMIDB"
+    toplevel: /root/eeg2/.data/mmidb
+    tmin: 0
+    tlen: 6
+    data_max: 0.001
+    data_min: -0.001
+    events:
+      - T1
+      - T2
+    exclude_sessions:
+      - "*R0[!48].edf"  # equivalently "*R0[1235679].edf"
+      - "*R1[!2].edf"   # equivalently "*R1[134].edf"
+    exclude_people:
+      - S088
+      - S090
+      - S092
+      - S100
+
+  sleep-edf:
+    name: "Sleep EDFx Cassette"
+    filename_format: "SC4{subject:2}{session:1}"
+    annotation_format: "SC4{subject:2}{session:1}*Hypnogram*"
+    toplevel: <path>
+    tmin: 0
+    tlen: 30
+    data_max: 4460.6
+    data_min: -4465.7
+    extensions:
+      - .edf
+    chunk_duration: 30
+    events:
+      'Sleep stage W': 0
+      'Sleep stage 1': 1
+      'Sleep stage 2': 2
+      'Sleep stage 3': 3
+      'Sleep stage 4': 3
+      'Sleep stage R': 4
+    rename_channels:
+      FPZ: 'EEG Fpz-Cz'
+      PZ: 'EEG Pz-Oz'
+      HEOGL: "EOG horizontal"
+    picks:
+      - eeg
+    exclude_channels:
+      - "Resp oro-nasal"
+      - 'EMG submental'
+      - 'Temp rectal' # Comfiest sleep ever
+      - 'Event marker'
